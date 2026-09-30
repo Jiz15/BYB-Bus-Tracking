@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/live-tracking", "destination": "/tracking.html" },
+    { "source": "/tracking", "destination": "/tracking.html" },
+    { "source": "/attendance", "destination": "/attendance.html" }
+  ]
+}
