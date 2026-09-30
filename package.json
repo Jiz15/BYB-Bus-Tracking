@@ -1,7 +1,7 @@
 {
-  "name": "byb-bus-tracking",
+  "name": "big-yellow-bus",
   "version": "1.0.0",
-  "description": "BYB Bus Tracking & Attendance Operations System",
+  "description": "Big Yellow Bus - School Transport & Attendance Operations System",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

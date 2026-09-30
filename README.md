@@ -1,4 +1,4 @@
-# BYB Bus Tracking & Attendance Operations ERP
+# Big Yellow Bus - School Transport & Attendance Operations ERP
 
 Built from Google Stitch Project `651093325793870125` ("School Transport & Attendance Dashboard").
 
