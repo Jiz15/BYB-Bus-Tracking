@@ -1,0 +1,863 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Bus Attendance Roster | Aegis Academy Fleet &amp; Operations ERP</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: "#4F46E5",
+              600: "#4338CA",
+              50: "#EEF2FF",
+              100: "#E0E7FF",
+            },
+            surface: "#F8F9FC",
+          },
+          fontFamily: {
+            sans: ["'Plus Jakarta Sans'", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FC] font-sans text-slate-800 antialiased min-h-screen">
+<div class="flex min-h-screen w-full bg-[#F8F9FC] p-4 gap-4">
+<!-- Left Persistent Navigation Sidebar -->
+<aside class="w-16 md:w-20 bg-white rounded-3xl border border-slate-200/80 shadow-sm flex flex-col items-center py-5 justify-between shrink-0 select-none z-30">
+<div class="flex flex-col items-center gap-7 w-full">
+<!-- Logo Icon -->
+<a class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-md hover:bg-slate-800 transition-colors" href="#" title="Aegis School Fleet ERP">
+<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+<path d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 15.99L12 18.72L7 15.99V12.27L12 15L17 12.27V15.99Z"></path>
+</svg>
+</a>
+<!-- Main Nav Icons -->
+<nav class="flex flex-col items-center gap-2.5 w-full px-2">
+<!-- Dashboard (Grid) -->
+<a class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" href="#" title="Dashboard">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="7" rx="1.5" width="7" x="3" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="14"></rect>
+<rect height="7" rx="1.5" width="7" x="3" y="14"></rect>
+</svg>
+</a>
+<!-- Fleet / Bus Attendance Roster (Active with purple container) -->
+<a class="w-11 h-11 rounded-2xl bg-[#5b32f5] text-white shadow-lg shadow-[#5b32f5]/30 flex items-center justify-center transition-all transform hover:scale-[1.02]" href="#" title="Bus Attendance Roster"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M8 6v6"></path><path d="M16 6v6"></path><path d="M4 12h16"></path><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2"></path><circle cx="7" cy="18" r="2"></circle><path d="M9 18h6"></path><circle cx="17" cy="18" r="2"></circle></svg></a>
+<!-- ID / Student Roster (Badge / Card) -->
+<a class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" href="#" title="Student Manifest &amp; Cards">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+<circle cx="9" cy="11" r="2"></circle>
+<path d="M15 9h2"></path>
+<path d="M15 13h2"></path>
+<path d="M6 16c0-1.5 1.5-2 3-2s3 .5 3 2"></path>
+</svg>
+</a>
+<!-- Reports & Document Logs -->
+<a class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" href="#" title="Dispatch Manifest &amp; Reports">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+<polyline points="10 9 9 9 8 9"></polyline>
+</svg>
+</a>
+<!-- Alerts & Notifications -->
+<a class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" href="#" title="Telemetry Alerts">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+</a>
+<!-- Analytics / Chart -->
+<a class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" href="#" title="Fleet Analytics">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<line x1="18" x2="18" y1="20" y2="10"></line>
+<line x1="12" x2="12" y1="20" y2="4"></line>
+<line x1="6" x2="6" y1="20" y2="14"></line>
+</svg>
+</a>
+</nav>
+</div>
+<!-- Bottom System & User Profile -->
+<div class="flex flex-col items-center gap-4 w-full px-2">
+<button class="w-11 h-11 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all" title="Settings">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+</button>
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center ring-2 ring-indigo-500/20 shadow-sm cursor-pointer">
+      MC
+    </div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<!-- Top Bar / App Shell Header -->
+<header class="px-2 lg:px-4 pt-1 pb-3"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1"><span class="">TRANSPORT OPERATIONS</span><span class="text-[#5b32f5] font-bold">/</span><span class="text-[#5b32f5] font-bold tracking-widest">ATTENDANCE &amp; VERIFICATION</span></div><h1 class="text-2xl font-bold tracking-tight text-slate-900 leading-tight">Bus Attendance <span class="text-[#5b32f5]">Roster</span></h1><p class="text-xs text-slate-400 font-medium mt-0.5">Real-time student transit verification, vehicle GPS telemetry, and campus perimeter routing.</p></div><div class="flex items-center gap-3"><div class="relative w-72 flex items-center"><span class="material-symbols-outlined absolute left-3.5 text-slate-400 text-lg pointer-events-none">search</span><input class="w-full text-xs pl-10 pr-4 py-2 rounded-full bg-white border border-slate-200/80 text-slate-600 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5b32f5]/25 shadow-sm transition-all" placeholder="Search student, bus, route..." type="text"></div><button class="relative p-2.5 rounded-full border border-slate-200/80 bg-white text-slate-600 hover:text-slate-900 transition-all shadow-sm flex items-center justify-center"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">4</span></button></div></div></header>
+<!-- Main Body Container -->
+<main class="flex-1 px-2 lg:px-4 py-2 space-y-4">
+<!-- Telemetry & Live Boarding Strip (Matching SCREEN_11 sleek card styling) -->
+<div class="bg-white rounded-2xl border border-slate-200/70 p-4 sm:p-5 shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-6 text-xs">
+<div>
+<span class="text-slate-400 font-medium block text-[11px]">Total Expected</span>
+<span class="font-extrabold text-slate-900 text-base">1,619</span>
+</div>
+<div class="h-7 w-px bg-slate-200 hidden sm:block"></div>
+<div>
+<span class="text-slate-400 font-medium block text-[11px]">Onboard Now</span>
+<span class="font-extrabold text-[#5b32f5] text-base">132 <span class="text-xs font-semibold text-[#5b32f5]/80">(8.1%)</span></span>
+</div>
+<div class="h-7 w-px bg-slate-200 hidden sm:block"></div>
+<div>
+<span class="text-slate-400 font-medium block text-[11px]">Offboard / Arrived</span>
+<span class="font-extrabold text-emerald-600 text-base">1,453</span>
+</div>
+<div class="h-7 w-px bg-slate-200 hidden sm:block"></div>
+<div>
+<span class="text-slate-400 font-medium block text-[11px]">Absent / Exception</span>
+<span class="font-extrabold text-amber-600 text-base">34</span>
+</div>
+</div>
+<!-- Live sync and progress indicator -->
+<div class="flex items-center gap-4">
+<div class="hidden sm:block text-right">
+<span class="text-[11px] font-bold text-slate-700">98.2% Gate Synchronized</span>
+<div class="w-36 h-2 bg-slate-100 rounded-full overflow-hidden mt-1">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 98.2%"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs font-bold">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  GPS/RFID Live
+                </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-colors">
+<span class="material-symbols-outlined text-sm text-slate-500">cloud_upload</span>
+<span class="">Export</span>
+<span class="material-symbols-outlined text-sm text-slate-400">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Master Table Card with Filter Shell -->
+<div class="bg-white rounded-3xl border border-slate-200/70 shadow-sm overflow-hidden">
+<!-- Top Category Pills -->
+<div class="p-4 sm:p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-2">
+<button class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold transition-all shadow-sm">
+<span class="">All</span>
+<span class="px-1.5 py-0.5 text-[10px] rounded-full bg-slate-700 text-white font-semibold">1,619</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/70 text-slate-700 text-xs font-semibold transition-all">
+<span class="">Students</span>
+<span class="px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-600 font-medium">1,609</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/70 text-slate-700 text-xs font-semibold transition-all">
+<span class="">Teacher</span>
+<span class="px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-600 font-medium">1,619</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/70 text-slate-700 text-xs font-semibold transition-all">
+<span class="">Staff</span>
+<span class="px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-600 font-medium">16</span>
+</button>
+</div>
+<!-- Live Status Search Bar in Filter Strip -->
+<div class="flex items-center gap-2">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-2 text-slate-400 text-base">search</span>
+<input class="w-full text-xs pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary shadow-sm" placeholder="Search manifest..." type="text">
+</div>
+<button class="p-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors shadow-sm" title="More filter options">
+<span class="material-symbols-outlined text-lg">tune</span>
+</button>
+</div>
+</div>
+<!-- Sub Status Bar (Onboard, Offboard, etc) -->
+<div class="px-4 sm:px-5 py-2.5 bg-slate-50/60 border-b border-slate-200/60 flex items-center justify-between gap-4 overflow-x-auto">
+<div class="flex items-center gap-1.5">
+<button class="px-3.5 py-1.5 rounded-xl bg-[#5b32f5]/10 text-[#5b32f5] font-bold text-xs border border-[#5b32f5]/25 shadow-xs whitespace-nowrap">Onboard <span class="font-extrabold ml-1">(132)</span></button>
+<button class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-200/50 transition-colors whitespace-nowrap">
+                Offboard <span class="text-slate-400 ml-1">(12)</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-200/50 transition-colors whitespace-nowrap">
+                Absent <span class="text-amber-600 font-bold ml-1">(03)</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-200/50 transition-colors whitespace-nowrap">
+                Wrong Bus <span class="text-rose-500 font-medium ml-1">(0)</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold hover:bg-slate-200/50 transition-colors whitespace-nowrap">
+                Unknown <span class="text-slate-400 ml-1">(0)</span>
+</button>
+</div>
+</div>
+<!-- Roster Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse text-xs">
+<thead>
+<tr class="bg-white border-b border-slate-200/70 text-slate-600 font-semibold select-none">
+<th class="py-3 px-4 w-10 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</th>
+<th class="py-3 px-3 min-w-[200px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Name</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[110px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Type</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[120px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Tag ID</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[100px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Group</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[110px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Login Time</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[210px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Login Location</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[90px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Bus</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[95px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Trip</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-3 min-w-[105px]">
+<div class="flex items-center gap-1.5 cursor-pointer hover:text-slate-900">
+<span class="">Mode</span>
+<span class="material-symbols-outlined text-xs text-slate-400">unfold_more</span>
+</div>
+</th>
+<th class="py-3 px-4 text-center min-w-[60px]">Actions</th>
+</tr>
+<!-- Inline Column Filter Row -->
+<tr class="bg-slate-50/70 border-b border-slate-200/70 text-[11px]">
+<td class="py-2 px-4 text-center"></td>
+<td class="py-2 px-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 text-xs">search</span>
+<input class="w-full text-[11px] pl-6 pr-2 py-1 rounded-lg border-0 bg-white shadow-xs ring-1 ring-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary" placeholder="Search Name" type="text">
+</div>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center justify-between px-2.5 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="">All Type</span>
+<span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+</button>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 text-xs">search</span>
+<input class="w-full text-[11px] pl-6 pr-2 py-1 rounded-lg border-0 bg-white shadow-xs ring-1 ring-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary" placeholder="Tag ID..." type="text">
+</div>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center justify-between px-2.5 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="">All group</span>
+<span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+</button>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="material-symbols-outlined text-xs text-slate-400">schedule</span>
+<span class="">Time Filter</span>
+</button>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 text-xs">search</span>
+<input class="w-full text-[11px] pl-6 pr-2 py-1 rounded-lg border-0 bg-white shadow-xs ring-1 ring-slate-200 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-primary" placeholder="Search Location..." type="text">
+</div>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center justify-between px-2 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="">All Bus</span>
+<span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+</button>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center justify-between px-2 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="">All Trip</span>
+<span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+</button>
+</td>
+<td class="py-2 px-3">
+<button class="w-full flex items-center justify-between px-2 py-1 rounded-lg bg-white shadow-xs ring-1 ring-slate-200 text-slate-700 font-medium">
+<span class="">All Mode</span>
+<span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+</button>
+</td>
+<td class="py-2 px-4"></td>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 text-slate-700">
+<!-- Row 1 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Harshini avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxKS-Fr9OCOFnlABL1LkXsBQGAJFamHjlObFnTS1fyKL7LXkqy0UPMInYr-ZRuKGIJAx6Y62CPei2eXsSQ9H9Ya8ThyTIoLbxMWnx_gtiMCIFlAXerZlBkIl0FhbjzlhvBTs2Q6I1zT8dsLvX_1o_ZtIuZMZiNUqFnxDv-qi7c91L5ZX0aJGA0P2kmVl5qFJuIyQc24hqiHX25EIrQ5lFEbUViA_9kzIrx6qgyb4JuzaEU0ImIiPk">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Harshini</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #41</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600">
+                      Manual
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Sara Khalid avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHahuNvCvJ51GlgARL5jWbGCvX_0I5qw8_FioydBKZr0ZHkR86pWH_3TFLe5_d-Sp002llUn-56SyZuBKUA57ONTjUldk90wF20le6EozWww3_Cd0NEI71lI0yATDT2FIb-uprS_QcXevL1KtWW8S_Gge91dhdQeGTVIEy_NNqV4xyavZA45I870RNmfxlWFRDqczQRf2MQ2ghGx0csFDxzJ3LPF8YK7aN0SAaBC282s4N8RUrl1M">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Sara Khalid</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #42</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600">
+                      Manual
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Athuba Ali avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1mBWmqs1aXdVHxjUx_FGCbCRINj10z6xrz98_r36cGPtz8cX5z8J8jBQaocHOm58HOFVrxsYRLeolk6GojNc90JsTsIBaXlcMY1iBwnuJT5o-Y0XXqsu62ar_1eN5Yv5VUfoHEfNf2aU4Fng3_gwd96G3ntliP-qh1BtWkoLm2eerc-YZuGROONC4fGPhqG9I4k2qA_HztEbJjenFPbZdyeJa37SPCCx3VQBQE4jw1A86YE2Jwco">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Athuba ali</span>
+<span class="text-[10px] text-pink-600 font-medium">Faculty Escort</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-pink-50 text-pink-700 border border-pink-200">
+                      Teacher
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Ansar ali avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmzXHsLl7jzaIxwBU9gVonzFzezmBY7xjg8OK8uXqSlWFZ4OqygCoFrMbFMr7B7tyKiDQxmzool9cQ1UER7xlgWmywJIXfHhlUrOP66wU0ZeotQOp_ja0dspG4H89sLxDM1v9mWqv-VjC58jBRInqbNSkGYvR8hLqWLZKYfRzSuCLbsDittsCqchDXn2LROogBm2BP2JSeQZGZpNBYJS7W81DwSLUZTvCTJxv-83gpxnkhfsAWezE">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Ansar ali</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #43</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Shaadi Samsar avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6-og0UDFtjB8TrwW56p4Ipj9Uxy14YFXDOsUY3C8eaO7h_ElRWAQrqpsmRcI8X-Y_iP8XpILypuTi2U7SYR0RQhyZvoWUDvd376uB0VNWBAoeTJY_93LIz1bRJLvnD3f6Hl2eJS5BVSwcSTS0ecfbXsqQZ4g4BPkuTO8g9KNQISYnX9qqICTQ0qC67JfHyIFYlHQBGLNkPBK5P7ClU-k734jcJpnjyZcjOfVmcv5Kbs4YjudhnO8">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Shaadi Samsar</span>
+<span class="text-[10px] text-amber-600 font-medium">Bus Attendant / Staff</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                      Staff
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600">
+                      Manual
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Devrasi avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0U_1KTnSPA_Si66f5AjlsXmMFsGX9BCtR--9YI3z66HIGGSMly6fHsC0Ta5Q5yYAyOyldp9jVm3Jbo-Uk-EoH3nfi2osNQk7bWTR0SxdRAXsyEsxlaTmy62S2Bs1kQM7Ba3PuMK1uy9aMoN3c_N0RPQzjrygndeOzB1p6cY2fce322vvSN0XSrslyixALcM_Xa7OgEB18uZdhSH-i6X_aw8seHOS7xHRoXWZf19dY5Nx3liyHZbY">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Devrasi</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #44</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Dilsha mehar avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzGpHAYjaF3sCyaYKtGqtaZMz-U1XTvugcXUASAb3xAjTaLoW3T5qmNMhMMMw5Y75wb3EFGgpt7FEuVRlHTez7VNGcySfld9wlMk5fHKpw4_upDIKpN_uu6ctVzHU8prPATlsof8May4oo1sosg78DhB5uq1Z3FftO6sZy2_9KXBb4bjx00pHLgM4Mu6-hWyH3a0SBjHSP_qCdzdZZ9gWQAxyNzKsMYihC_ifwfkXDK3BubVDNxhA">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Dilsha mehar</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #45</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Sukhtar kumar avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrIRZZtaUbQzhJrBsDw6OH0ALuBGa6oOcfBNLzrPjtxKv9xR6k4K2tHa9LWJfEdtnqVpsvW5hBvuATwrZhnlVmEpVXcJnhwRCmMBN_5C11kxU7cSNmgOk7QsLYnKpLxT29saRTL4vcTPz_LgdGojyKh9Wd03dXeSokT-X5W2beCOa02zq_92ZcDTAQZXm3_GwxjYd6889U-fO52Y_Ahd00iY2xTeCsIY0nzdLjQlUGlBnv14Qk-To">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Sukhtar kumar</span>
+<span class="text-[10px] text-pink-600 font-medium">Head of Science</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-pink-50 text-pink-700 border border-pink-200">
+                      Teacher
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600">
+                      Manual
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 9 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Liam Chen avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQoM0M8jS7C-AjdzOfF6lXB3AiJoYIKYIEaGSoxZrQCHfVEY5wyDzKNbE6LyK3ocZz2fSj1k7q1rGyrvVrNKMi78yTq-gzu_FCZsNnEm8eHsDcKdytZeRiLpO5TFpA27ENtJYBiKFxGJp4Rbbn1h_6lug9e0FuaRJceRkNtv13-jRDXGh4QcWrA34vZWEmHTjK5J5V93xmoNGupSIWSN-3Y3KHfwEonrgc3A4ZtVoUB8buv1f2XZQ">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Liam Chen</span>
+<span class="text-[10px] text-slate-400">Grade 5 • Roll #12</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G5-A</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:22 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="Elm &amp; 4th St (Hwy 101 Junction)">Elm &amp; 4th St (Hwy 101)</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-24</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 10 -->
+<tr class="hover:bg-indigo-50/30 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="rounded text-primary focus:ring-primary border-slate-300 w-4 h-4 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-3">
+<img alt="Athira avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzMyk9bD8Vr6Enuf_F8xOLSmpkktYVdV2JUARGqKva1kudfiCWQhRScU377yqUlGfFCDbIb7tnlabewtrOiTNmeoeW2hiUJ8_TeaVi0L2x84APtnT0xipj618pmYja54jj07n9ScHmZo88fhkHslKgDgj3ugzX2oktFPREuYSdrIE7g4jpMA52kB0RItk5PCk_pdI-nkHmzNRIJiZaUMxd6Ej-GeiZ-EN1HJLGZGtopAuH41dIw5c">
+<div>
+<span class="font-bold text-slate-900 block group-hover:text-primary transition-colors">Athira</span>
+<span class="text-[10px] text-slate-400">Grade 8 • Roll #48</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Student
+                    </span>
+</td>
+<td class="py-3 px-3 font-semibold text-slate-900 font-mono text-xs">EMP001</td>
+<td class="py-3 px-3 font-semibold text-slate-900">G8-B</td>
+<td class="py-3 px-3 font-medium text-slate-600">07:18 AM</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1.5 text-slate-600">
+<span class="material-symbols-outlined text-xs text-slate-400">place</span>
+<span class="truncate max-w-[200px]" title="742 Evergreen, Sector 4, North Cross">742 Evergreen, Sector 4...</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 font-bold text-slate-800 text-[11px]">B-12</span>
+</td>
+<td class="py-3 px-3 text-slate-600 font-mono">B-1298</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-primary border border-indigo-200">
+<span class="material-symbols-outlined text-xs">contactless</span>
+                      NFC
+                    </span>
+</td>
+<td class="py-3 px-4 text-center">
+<button class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+<span class="material-symbols-outlined text-base">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Bar -->
+<div class="p-4 sm:p-5 border-t border-slate-200/70 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Verified: 132 Onboard
+              </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-primary border border-indigo-200/60 font-semibold">
+<span class="material-symbols-outlined text-xs">sensors</span>
+                Gate Beacons: 100% Synced
+              </span>
+<span class="hidden xl:inline text-slate-400 font-medium">Showing 1-10 of 1,619 records</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-xs text-slate-600 font-medium">
+<span class="">Rows per page:</span>
+<div class="relative">
+<select class="appearance-none text-xs bg-slate-100 border-0 rounded-lg py-1.5 pl-3 pr-7 font-bold text-slate-800 cursor-pointer focus:ring-1 focus:ring-primary">
+<option selected="">10</option>
+<option>25</option>
+<option>50</option>
+<option>100</option>
+</select>
+<span class="material-symbols-outlined absolute right-1.5 top-1.5 text-sm pointer-events-none text-slate-400">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-1 select-none">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-900 text-white text-xs font-bold shadow-sm">
+                  1
+                </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-medium transition-colors">
+                  2
+                </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-medium transition-colors">
+                  3
+                </button>
+<span class="px-1 text-slate-400 text-xs tracking-widest font-mono">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-medium transition-colors">
+                  15
+                </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 4 Summary KPI Cards (Unified SCREEN_11 card styling) -->
+
+<!-- System Footer -->
+<footer class="pt-4 pb-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+<div class="flex items-center gap-3">
+<span class="">© 2024 Aegis Academy School ERP</span>
+<span class="">•</span>
+<span class="text-emerald-600 font-medium">GPS Telemetry 99.98%</span>
+<span class="">•</span>
+<span class="">RFID Gate Sync Live</span>
+<span class="">•</span>
+<span class="font-mono">v4.12.0-prod</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Server Node 04 Online
+            </span>
+<a class="hover:text-slate-600 transition-colors" href="#">System Documentation</a>
+</div>
+</footer>
+</main>
+</div>
+</div>
+
+
+
+
+</body></html>

@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Aegis ERP - Live Fleet &amp; School Attendance Telemetry</title>
+  
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS v3 with Forms & Container Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#712ae2',
+              700: '#5b21b6',
+              800: '#4c1d95',
+              900: '#3525cd',
+            },
+            primary: '#3525cd',
+            accent: '#712ae2'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          borderRadius: {
+            '2xl': '1.25rem',
+            '3xl': '1.75rem',
+            '4xl': '2.25rem',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans antialiased text-slate-800 min-h-screen bg-[#f8fafc]">
+  <!-- Outer Floating App Shell -->
+  <div class="w-full min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-8 flex gap-6 sm:gap-7">
+    
+    <!-- Left Slim Dock Navigation -->
+    <aside class="hidden xl:flex flex-col items-center justify-between w-20 bg-white/90 backdrop-blur-md rounded-3xl py-7 border border-slate-100/90 shadow-sm shrink-0" data-purpose="sidebar-dock">
+      <div class="flex flex-col items-center gap-6">
+        <!-- Logo Pill Badge -->
+        <a class="w-13 h-13 p-2.5 rounded-2xl bg-black text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform" href="index.html" title="Aegis Academy ERP">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-width="2.2"></circle>
+            <circle cx="9" cy="12" fill="currentColor" r="2.5"></circle>
+            <circle cx="15" cy="12" fill="currentColor" r="2.5"></circle>
+          </svg>
+        </a>
+        
+        <!-- Navigation Icons -->
+        <nav class="flex flex-col items-center gap-3.5 pt-4">
+          <!-- 1. Dashboard (Active) -->
+          <a href="index.html" class="w-12 h-12 rounded-2xl bg-brand-600 text-white flex items-center justify-center shadow-lg shadow-brand-600/30 transition-all" title="Dashboard &amp; Telemetry">
+            <span class="material-symbols-outlined text-[24px]">dashboard</span>
+          </a>
+          <!-- 2. Live Fleet Tracking -->
+          <a href="tracking.html" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Live Fleet &amp; Routes">
+            <span class="material-symbols-outlined text-[24px]">directions_bus</span>
+          </a>
+          <!-- 3. Bus Attendance -->
+          <a href="attendance.html" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Student Attendance">
+            <span class="material-symbols-outlined text-[24px]">badge</span>
+          </a>
+          <!-- 4. Gate Turnstiles -->
+          <button onclick="showToast('Gate Turnstiles: 5 active biometric points online', 'info', 'sensor_door')" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Gate Turnstiles">
+            <span class="material-symbols-outlined text-[24px]">sensor_door</span>
+          </button>
+          <!-- 5. Incident Audits -->
+          <button onclick="showToast('Incident Audit Stream: 2 flagged exceptions today', 'warning', 'notifications_active')" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Incident Audits">
+            <span class="material-symbols-outlined text-[24px]">notifications_active</span>
+          </button>
+          <!-- 6. Analytics & Reports -->
+          <button onclick="showToast('Campus Operational Analytics ready for export', 'info', 'analytics')" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Analytics &amp; Reports">
+            <span class="material-symbols-outlined text-[24px]">analytics</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Controls & Profile -->
+      <div class="flex flex-col items-center gap-4">
+        <button onclick="showToast('ERP Configuration: Settings modal opened', 'info', 'settings')" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Settings">
+          <span class="material-symbols-outlined text-[24px]">settings</span>
+        </button>
+        <div class="relative cursor-pointer group" title="Marcus Chen · Transport Operations Director">
+          <div class="w-12 h-12 rounded-2xl overflow-hidden ring-2 ring-brand-500/25 group-hover:ring-brand-500 p-0.5 transition-all bg-white shadow-sm">
+            <div class="w-full h-full rounded-[14px] bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+              MC
+            </div>
+          </div>
+          <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="flex-1 flex flex-col min-w-0">
+      
+      <!-- 1. TOP HEADER & BREADCRUMBS -->
+      <header class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-6" data-purpose="dashboard-header">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <span>Transport Operations</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-brand-600 font-bold">Dashboard &amp; Telemetry</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
+            Welcome Back, <span class="text-brand-600">Marcus!</span>
+          </h1>
+          <p class="text-slate-500 text-sm mt-0.5 whitespace-nowrap truncate">
+            Automated telemetry reconciliation across bus beacons, turnstiles, and RFID.
+          </p>
+        </div>
+        
+        <!-- Standard Right Header Action Cluster -->
+        <div class="flex items-center gap-3 shrink-0">
+          <!-- Live Time Pill -->
+          <div class="hidden sm:flex items-center gap-2 px-3.5 h-10 bg-white border border-slate-200/80 rounded-2xl shadow-sm text-xs font-semibold text-slate-600 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-mono" data-live-clock>08:42:15 AM</span>
+            <span class="text-slate-300">|</span>
+            <span class="text-brand-700 font-bold">Gate 01 Active</span>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="relative w-64 md:w-72 h-10 shrink-0">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <span class="material-symbols-outlined text-[18px]">search</span>
+            </span>
+            <input class="w-full h-10 pl-10 pr-4 bg-white border border-slate-200/80 rounded-2xl text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition-all shadow-sm" placeholder="Search student, bus, route..." type="text">
+          </div>
+
+          <!-- Notification Bell with Counter -->
+          <button onclick="showToast('4 alerts: 1 delayed bus, 1 RFID mismatch, 2 guardian medical notes', 'warning', 'notifications')" class="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:bg-slate-50 shadow-sm relative transition-all shrink-0" title="Notifications (4 pending)">
+            <span class="material-symbols-outlined text-[20px]">notifications</span>
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow-sm">4</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- 2. TOP KPI ROW & RECONCILIATION EQUATION -->
+      <section class="space-y-4 mb-7" data-purpose="kpi-metrics-section">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- KPI 1: Arrived Today -->
+          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Arrived Today</span>
+              <div class="w-8 h-8 rounded-xl bg-indigo-50 text-brand-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">840</span>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">96.1%</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Total arrivals verified today</p>
+          </div>
+
+          <!-- KPI 2: Currently at School -->
+          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Currently at School</span>
+              </div>
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">school</span>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">420</span>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">50.0% of Arrived</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Live campus presence</p>
+          </div>
+
+          <!-- KPI 3: Left School -->
+          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Left School</span>
+              <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">420</span>
+              <span class="text-xs font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">50.0% of Arrived</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Exited today / field trips</p>
+          </div>
+
+          <!-- KPI 4: Absent -->
+          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Absent</span>
+              <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">warning</span>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">34</span>
+              <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">3.9% rate</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Unplanned / Excused</p>
+          </div>
+        </div>
+
+        <!-- Reconciliation Equation Pill / Banner -->
+        <div class="bg-white border border-slate-100 rounded-2xl px-5 py-3.5 flex flex-wrap xl:flex-nowrap items-center justify-between gap-4 text-xs shadow-sm">
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+              <span class="material-symbols-outlined text-[16px]">route</span>
+            </div>
+            <span class="font-bold text-slate-900 text-sm whitespace-nowrap">Trip Status</span>
+          </div>
+          <div class="h-4 w-px bg-slate-200 hidden sm:block shrink-0"></div>
+          <div class="flex flex-wrap items-center gap-3 shrink-0">
+            <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+              <span class="text-slate-500 font-medium">Total:</span>
+              <span class="font-bold text-slate-900 font-mono">24</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-emerald-700 font-medium">Ongoing:</span>
+              <span class="font-bold text-emerald-700 font-mono">18 Active</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              <span class="text-indigo-700 font-medium">Completed:</span>
+              <span class="font-bold text-indigo-700 font-mono">4 Done</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span class="text-amber-700 font-medium">Inactive:</span>
+              <span class="font-bold text-amber-700 font-mono">2 Alert</span>
+            </div>
+          </div>
+          <div class="hidden lg:flex items-center gap-2.5 flex-1 min-w-[200px] max-w-[340px] shrink-0">
+            <span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">Progress: <strong class="text-brand-700 font-bold font-mono">91.7%</strong></span>
+            <div class="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden flex shadow-inner">
+              <div class="h-full bg-indigo-600 rounded-l-full" style="width: 17%;" title="4 Completed"></div>
+              <div class="h-full bg-emerald-500" style="width: 75%;" title="18 Ongoing"></div>
+              <div class="h-full bg-amber-400 rounded-r-full" style="width: 8%;" title="2 Inactive"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-slate-500 font-medium text-xs shrink-0 ml-auto xl:ml-0">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="whitespace-nowrap">Live Dispatch Sync</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. CHARTS & ATTENTION REQUIRED (2-column layout) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-7">
+        <!-- Left: Student Movement Dynamics Chart -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between p-6" data-purpose="movement-dynamics-card">
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Student Movement Dynamics</span>
+                    <span class="text-[11px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md">Real-time Turnstiles</span>
+                  </div>
+                  <div class="flex flex-wrap items-baseline gap-3 mt-1">
+                    <div class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-baseline gap-2">
+                      840 <span class="text-xs font-normal text-slate-500">Intake &amp; Dispersal Flow</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs">
+                      <span class="bg-brand-50 border border-brand-100 text-brand-700 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>Weekly Avg Arrival: <strong class="font-bold">812/day</strong>
+                      </span>
+                      <span class="bg-rose-50 border border-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">person_off</span>Weekly Avg Absent: <strong class="font-bold">28/day (3.3%)</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center p-1 bg-slate-100 rounded-2xl text-xs font-semibold text-slate-600">
+                    <button class="px-3 py-1 rounded-xl bg-white text-brand-700 font-bold shadow-sm transition-all">Week</button>
+                    <button class="px-3 py-1 rounded-xl text-slate-600 hover:text-slate-900 transition-colors">Month</button>
+                  </div>
+                  <a href="attendance.html" class="w-8 h-8 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 hover:bg-slate-100" title="Expand View">
+                    <span class="material-symbols-outlined text-[16px]">north_east</span>
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Histogram Bars -->
+              <div class="relative pb-1 pt-4">
+                <div class="flex gap-3 h-64">
+                  <div class="flex flex-col justify-between items-end text-[10px] font-mono font-medium text-slate-400 py-0.5 pr-1 border-r border-slate-200/80 shrink-0 w-8 select-none">
+                    <span>400</span><span>300</span><span>200</span><span>100</span><span>0</span>
+                  </div>
+                  <div class="relative flex-1 h-full">
+                    <div class="absolute inset-0 flex flex-col justify-between pointer-events-none py-0.5">
+                      <div class="w-full border-b border-dashed border-slate-200/80"></div>
+                      <div class="w-full border-b border-dashed border-slate-200/80"></div>
+                      <div class="w-full border-b border-dashed border-slate-200/80"></div>
+                      <div class="w-full border-b border-dashed border-slate-200/80"></div>
+                    </div>
+                    <div class="relative grid grid-cols-7 gap-3 sm:gap-5 items-end h-full z-10 px-2">
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[45%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Mon</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[60%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Tue</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[55%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Wed</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[70%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Thu</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end relative group cursor-pointer">
+                        <div class="absolute -top-3 z-20 bg-amber-400 text-amber-950 font-extrabold text-[10px] px-2.5 py-0.5 rounded-full shadow-md whitespace-nowrap border border-amber-300">Today: +840 arrivals</div>
+                        <div class="w-full max-w-[56px] h-[96%] rounded-2xl bg-striped-purple group-hover:brightness-105 transition-all relative flex flex-col items-center pt-1.5 shadow-md shadow-brand-600/20">
+                          <span class="w-3 h-3 rounded-full bg-white border-2 border-brand-900 shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full">Fri</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[25%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Sat</span>
+                      </div>
+                      <div class="flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer">
+                        <div class="w-full max-w-[56px] h-[15%] rounded-2xl bg-striped-purple-light group-hover:brightness-95 transition-all relative flex flex-col items-center pt-1.5">
+                          <span class="w-2.5 h-2.5 rounded-full bg-brand-900 border border-white shadow-sm"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500">Sun</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between mt-1 border-t border-slate-100 text-xs pt-2">
+              <div class="flex flex-wrap items-center gap-4">
+                <span class="flex items-center gap-1.5 font-medium text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-brand-600"></span> Arrivals: <strong>840</strong></span>
+                <span class="flex items-center gap-1.5 font-medium text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-indigo-300"></span> Dispersal: <strong>420</strong></span>
+                <span class="flex items-center gap-1.5 font-medium text-emerald-700"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> On campus: <strong>420</strong></span>
+              </div>
+              <span class="text-slate-400 font-medium text-[11px]">5 Active Turnstiles</span>
+            </div>
+          </div>
+
+          <!-- Attendance Reconciliation Breakdown -->
+          <div class="rounded-3xl border border-indigo-100/80 shadow-md p-5 flex flex-col justify-between transition-all bg-white" data-purpose="attendance-reconciliation-card">
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+                  </div>
+                  <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+                    <h3 class="font-bold text-slate-900 text-base leading-none whitespace-nowrap">Attendance Reconciliation</h3>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Live Sync</span>
+                    <span class="text-slate-300 hidden md:inline">·</span>
+                    <p class="text-xs text-slate-400 whitespace-nowrap">Verification intake categorized by Bus Transit and Campus Walk-in Gates</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="flex items-center p-1 bg-slate-100 rounded-2xl text-xs font-semibold text-slate-600">
+                    <button class="px-3 py-1 rounded-xl bg-white text-brand-700 font-bold shadow-sm flex items-center gap-1.5 transition-all" id="tab-btn-bus" onclick="document.getElementById('tab-content-bus').classList.remove('hidden'); document.getElementById('tab-content-walkin').classList.add('hidden'); this.className='px-3 py-1 rounded-xl bg-white text-brand-700 font-bold shadow-sm flex items-center gap-1.5 transition-all'; document.getElementById('tab-btn-walkin').className='px-3 py-1 rounded-xl text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-all';">
+                      <span class="material-symbols-outlined text-[16px]">directions_bus</span>
+                      <span>Bus</span>
+                      <span class="font-mono text-[10px] bg-brand-50 text-brand-700 px-1.5 py-0.5 rounded-full border border-brand-100">718</span>
+                    </button>
+                    <button class="px-3 py-1 rounded-xl text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-all" id="tab-btn-walkin" onclick="document.getElementById('tab-content-bus').classList.add('hidden'); document.getElementById('tab-content-walkin').classList.remove('hidden'); this.className='px-3 py-1 rounded-xl bg-white text-brand-700 font-bold shadow-sm flex items-center gap-1.5 transition-all'; document.getElementById('tab-btn-bus').className='px-3 py-1 rounded-xl text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-all';">
+                      <span class="material-symbols-outlined text-[16px]">sensor_door</span>
+                      <span>Walk-in</span>
+                      <span class="font-mono text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full">122</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bus Tab Content -->
+              <div class="flex flex-col gap-3 mb-3" id="tab-content-bus">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div class="p-4 rounded-2xl bg-white border border-slate-200/80 flex flex-col justify-between gap-2 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-brand-600">contactless</span><span>NFC Tap</span></div>
+                      <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-100">86.3%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1">
+                      <span class="text-2xl font-mono font-extrabold text-slate-900 tracking-tight">620</span>
+                      <span class="text-xs text-slate-400 font-medium">Students</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div class="h-full bg-brand-600 rounded-full" style="width: 86.3%;"></div>
+                    </div>
+                  </div>
+                  <div class="p-4 rounded-2xl bg-white border border-slate-200/80 flex flex-col justify-between gap-2 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-600">qr_code_scanner</span><span>QR Scan</span></div>
+                      <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">10.3%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1">
+                      <span class="text-2xl font-mono font-extrabold text-slate-900 tracking-tight">74</span>
+                      <span class="text-xs text-slate-400 font-medium">Students</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div class="h-full bg-emerald-500 rounded-full" style="width: 10.3%;"></div>
+                    </div>
+                  </div>
+                  <div class="p-4 rounded-2xl bg-white border border-slate-200/80 flex flex-col justify-between gap-2 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-amber-600">assignment_ind</span><span>Manual</span></div>
+                      <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">3.4%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1">
+                      <span class="text-2xl font-mono font-extrabold text-slate-900 tracking-tight">24</span>
+                      <span class="text-xs text-slate-400 font-medium">Students</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div class="h-full bg-amber-400 rounded-full" style="width: 3.4%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Walk-in Tab Content -->
+              <div class="hidden flex flex-col gap-3 mb-3" id="tab-content-walkin">
+                <div class="flex flex-wrap items-center justify-between pb-2 border-b border-slate-200/70 gap-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+                      <span class="material-symbols-outlined text-[16px]">sensor_door</span>
+                    </div>
+                    <div>
+                      <span class="text-xs font-bold text-slate-900 block leading-tight">Walk-in &amp; Gate Turnstiles</span>
+                      <span class="text-[10px] text-slate-400">Pedestrian perimeter checkpoints · 98.4% of expected non-bus cohort</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono font-bold text-indigo-700 bg-white border border-slate-200 px-2.5 py-1 rounded-lg shadow-sm">122 / 124 Cohort</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div class="p-2.5 rounded-xl bg-white border border-slate-200/80 flex flex-col justify-between gap-1 shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
+                      <div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-indigo-600">contactless</span><span>NFC Tap</span></div>
+                      <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-1 py-0.2 rounded border border-indigo-100">68.8%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1"><span class="text-lg font-mono font-extrabold text-slate-900">84</span><span class="text-[10px] text-slate-400 font-medium">Students</span></div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-indigo-600 rounded-full" style="width: 68.8%;"></div></div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-white border border-slate-200/80 flex flex-col justify-between gap-1 shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
+                      <div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-emerald-600">qr_code_scanner</span><span>QR Scan</span></div>
+                      <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-100">21.3%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1"><span class="text-lg font-mono font-extrabold text-slate-900">26</span><span class="text-[10px] text-slate-400 font-medium">Students</span></div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-emerald-500 rounded-full" style="width: 21.3%;"></div></div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-white border border-slate-200/80 flex flex-col justify-between gap-1 shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
+                      <div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-amber-600">assignment_ind</span><span>Manual</span></div>
+                      <span class="text-[9px] font-bold text-amber-700 bg-amber-50 px-1 py-0.2 rounded border border-amber-100">9.9%</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1"><span class="text-lg font-mono font-extrabold text-slate-900">12</span><span class="text-[10px] text-slate-400 font-medium">Students</span></div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-amber-400 rounded-full" style="width: 9.9%;"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
+                  <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-brand-600"></span> Bus Cohort: <strong class="text-slate-700 font-mono">718</strong></span>
+                  <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> Walk-in Cohort: <strong class="text-slate-700 font-mono">122</strong></span>
+                  <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Total Active: <strong class="text-slate-700 font-mono">840 (100%)</strong></span>
+                </div>
+                <a class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1" href="attendance.html">
+                  Reconciliation log audit →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Student Transit Split (School Bus vs Own Transit) -->
+        <div class="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="student-transit-split-card">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">pie_chart</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">Student Transit Split</h3>
+                  <p class="text-xs text-slate-400">Modal distribution and intake progress</p>
+                </div>
+              </div>
+              <button class="text-slate-400 hover:text-slate-600" title="Options">
+                <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+              <!-- School Bus Riders -->
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
+                  <div>
+                    <span class="text-xs font-bold text-slate-900 block">School Bus Riders</span>
+                    <span class="text-[11px] text-slate-400">Institutional Transport</span>
+                  </div>
+                  <span class="text-xs font-mono font-bold text-brand-700 bg-brand-50 border border-brand-100 px-2.5 py-1 rounded-lg">846 assigned</span>
+                </div>
+                <div class="space-y-2.5 text-xs">
+                  <div class="flex justify-between items-center text-slate-600"><span>Picked Up</span><span class="font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">780</span></div>
+                  <div class="flex justify-between items-center text-slate-600"><span>In Transit</span><span class="font-bold text-brand-600 bg-white border border-slate-200 px-2 py-0.5 rounded-md">28</span></div>
+                  <div class="flex justify-between items-center text-slate-600"><span>Pending</span><span class="font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">38</span></div>
+                  <div class="pt-2 border-t border-slate-200/70 flex justify-between items-center text-rose-700 font-medium"><span>Wrong Bus Exception</span><span class="bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full text-[10px] border border-rose-200">02 Students</span></div>
+                </div>
+                <div class="h-2.5 rounded-full bg-striped-purple shadow-inner w-full"></div>
+              </div>
+
+              <!-- Private Transit -->
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
+                  <div>
+                    <span class="text-xs font-bold text-slate-900 block">Own / Private Transit</span>
+                    <span class="text-[11px] text-slate-400">Non-Bus Cohort &amp; Diverted</span>
+                  </div>
+                  <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg">124 students</span>
+                </div>
+                <div class="space-y-2 text-xs">
+                  <div class="flex justify-between items-center text-slate-600"><span>Direct Carpool</span><span class="font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">84</span></div>
+                  <div class="flex justify-between items-center text-slate-600"><span>Walk-in Turnstile</span><span class="font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">40</span></div>
+                  <div class="flex justify-between items-center text-amber-800"><span class="flex items-center gap-1">Bus Cohort via Own Transport</span><span class="font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md font-mono">14</span></div>
+                  <div class="flex justify-between items-center text-slate-600"><span>Unknown / Unclassified</span><span class="font-bold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-md">08</span></div>
+                  <div class="pt-2 border-t border-slate-200/70 flex justify-between items-center text-indigo-700 font-medium"><span>Gate RFID Scans</span><span class="bg-indigo-100/70 text-indigo-700 font-bold px-2 py-0.5 rounded-full text-[10px] border border-indigo-200">102 Scans</span></div>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-300 shadow-inner w-full"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <div class="flex items-center gap-2 truncate">
+              <span class="font-bold text-slate-700">970 Total Assigned Pupils</span>
+            </div>
+            <span class="material-symbols-outlined text-[16px] text-slate-400 shrink-0">verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. TRANSPORT OPERATIONS & GATE PHYSICAL ACCESS (2-column layout) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-7">
+        <!-- Left: Transport Operations (Fleet & Trips) -->
+        <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="transport-operations-card">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">commute</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">Transport Operations</h3>
+                  <p class="text-xs text-slate-400">Fleet telemetry and morning pickup cycle</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">GPS Health: 100% OK</span>
+            </div>
+
+            <!-- Fleet Status Metrics -->
+            <div class="space-y-3">
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                      <span class="material-symbols-outlined text-[15px]">directions_bus</span>
+                    </div>
+                    <span class="font-bold text-slate-900 text-xs">Fleet Status: 18 Active</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs">
+                    <span class="text-slate-400 font-medium">Total Fleet:</span>
+                    <span class="font-mono font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">24 Buses</span>
+                  </div>
+                </div>
+                <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden flex p-0.5 gap-0.5 shadow-inner">
+                  <div class="h-full bg-brand-600 rounded-full transition-all" style="width: 75%;" title="18 Active Buses"></div>
+                  <div class="h-full bg-amber-400 rounded-full transition-all" style="width: 17%;" title="4 Idle Buses"></div>
+                  <div class="h-full bg-slate-400 rounded-full transition-all" style="width: 8%;" title="2 Inactive Buses"></div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] pt-0.5 text-slate-500 font-medium">
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-600"></span> 18 Active (75%)</span>
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> 04 Idle (17%)</span>
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400"></span> 02 Inactive (8%)</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 rounded-lg bg-indigo-50 text-brand-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
+                      </div>
+                      <span class="font-bold text-slate-900 text-xs">Drivers Count</span>
+                    </div>
+                    <span class="text-xs font-mono font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">24 Total</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/70 text-xs">
+                    <div class="flex flex-col"><span class="text-[11px] text-slate-400 font-medium">Active Drivers</span><span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 mt-1 inline-block w-fit">21 Active</span></div>
+                    <div class="flex flex-col"><span class="text-[11px] text-slate-400 font-medium">Idle Drivers</span><span class="font-bold text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md mt-1 inline-block w-fit">03 Idle</span></div>
+                  </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 rounded-lg bg-indigo-50 text-brand-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[16px]">supervised_user_circle</span>
+                      </div>
+                      <span class="font-bold text-slate-900 text-xs">Attenders Status</span>
+                    </div>
+                    <span class="text-xs font-mono font-bold text-slate-900 bg-white border border-slate-200 px-2 py-0.5 rounded-md">24 Total</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/70 text-xs">
+                    <div class="flex flex-col"><span class="text-[11px] text-slate-400 font-medium">Active Attenders</span><span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 mt-1 inline-block w-fit">20 Active</span></div>
+                    <div class="flex flex-col"><span class="text-[11px] text-slate-400 font-medium">Idle Attenders</span><span class="font-bold text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md mt-1 inline-block w-fit">04 Idle</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 text-xs whitespace-nowrap text-slate-600">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="font-medium text-slate-700">Fleet Compliance: <strong>100% Verified</strong></span></div>
+                <div class="flex items-center gap-1.5 text-emerald-700 font-bold"><span class="material-symbols-outlined text-emerald-600 text-[16px]">schedule</span><span>92% On-Time</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Dispatch sync updated 30s ago</span>
+            <a class="font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1" href="tracking.html">
+              View all scheduled trips →
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Gate Physical Access -->
+        <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="gate-physical-access-card">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">door_sliding</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">Gate Physical Access</h3>
+                  <p class="text-xs text-slate-400">Campus perimeter telemetry &amp; turnstile barriers</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">03 Active · 02 Closed</span>
+            </div>
+
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 01 (North Main)</span>
+                    <span class="text-slate-400">·</span>
+                    <span class="text-slate-500 truncate">Primary Bus Entrance &amp; Drop-off, RFID &amp; Boom Barrier</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">Active</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 02 (East Pedestrian)</span>
+                    <span class="text-slate-400">·</span>
+                    <span class="text-slate-500 truncate">Walk-ins &amp; Staff Turnstiles, Biometric Verified</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">Active</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 03 (West Parent Drop)</span>
+                    <span class="text-slate-400">·</span>
+                    <span class="text-slate-500 truncate">Private vehicles &amp; Carpools, 2 Staff Stationed</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">Active</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3 opacity-75">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 04 (South Service)</span>
+                    <span class="text-slate-400">·</span>
+                    <span class="text-slate-500 truncate">Kitchen &amp; Supplies Logistics, Magnetic Locks</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-semibold text-slate-600 bg-slate-200/80 px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">Closed</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 05 (Emergency Gate)</span>
+                    <span class="text-slate-400">·</span>
+                    <span class="text-slate-500 truncate">Fire &amp; Paramedic Corridor, Rapid Override OK</span>
+                  </div>
+                </div>
+                <span class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full shrink-0 whitespace-nowrap">Standby</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-4 mt-3 border-t border-slate-100">
+            <a class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center justify-between group" href="attendance.html">
+              <span>View gate activity &amp; barrier logs</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. LIVE BUS TRACKING TABLE (Full-Width Card) -->
+      <section class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mb-7" data-purpose="live-fleet-route-details-card">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[18px]">alt_route</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-slate-900 text-base leading-none">Live Fleet Route &amp; Bus Status</h3>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Live Telemetry Sync</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">Active route transit progression, stop telemetry, and student manifests</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <div class="flex items-center p-1 bg-slate-100 rounded-2xl font-semibold text-slate-600">
+              <button class="px-3 py-1 rounded-xl bg-white text-brand-700 shadow-sm flex items-center gap-1.5 font-bold">
+                <span>All</span><span class="font-mono text-[10px] bg-brand-50 px-1.5 py-0.5 rounded-full border border-brand-100">18</span>
+              </button>
+              <button class="px-3 py-1 rounded-xl hover:text-slate-900 flex items-center gap-1.5">
+                <span>On Time</span><span class="font-mono text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full border border-emerald-100">14</span>
+              </button>
+              <button class="px-3 py-1 rounded-xl hover:text-slate-900 flex items-center gap-1.5">
+                <span>Delayed</span><span class="font-mono text-[10px] bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded-full border border-rose-100">3</span>
+              </button>
+              <button class="px-3 py-1 rounded-xl hover:text-slate-900 flex items-center gap-1.5">
+                <span>Approaching</span><span class="font-mono text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-full border border-amber-100">1</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-2xl border border-slate-200/80">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="py-2.5 px-3">Bus / Route</th>
+                  <th class="py-2.5 px-3">Driver &amp; Crew</th>
+                  <th class="py-2.5 px-3">Route Progression</th>
+                  <th class="py-2.5 px-3">ETA Campus</th>
+                  <th class="py-2.5 px-3">Status</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700 font-normal">
+                <!-- Bus 12 -->
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg bg-brand-600 text-white font-bold text-xs flex items-center justify-center shrink-0">#12</span>
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">Southside Line</div>
+                        <span class="text-[10px] font-semibold text-brand-700 bg-brand-50 border border-brand-100 px-1.5 py-0.2 rounded">Route 04</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div><span class="font-semibold text-slate-800">A. Jensen</span> <span class="text-slate-400">(Attd: L. Vance)</span></div>
+                    <div class="text-[11px] text-slate-500 font-mono">42/48 Students · <span data-live-speed data-base-speed="34">34 km/h</span></div>
+                  </td>
+                  <td class="py-2.5 px-3">
+                    <div class="min-w-[190px]">
+                      <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                        <span class="truncate">Oakridge (07:22)</span>
+                        <span class="font-bold text-brand-700">Stop 7/9</span>
+                        <span class="text-slate-600">Gate 01</span>
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-brand-600 rounded-full" style="width: 78%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">08:05 AM</div>
+                    <div class="text-[10px] text-emerald-600 font-semibold">8 mins away</div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">On Time</span>
+                  </td>
+                  <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                    <a href="tracking.html" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 font-semibold hover:text-brand-600 hover:border-brand-200 transition-colors shadow-sm inline-block">Track</a>
+                  </td>
+                </tr>
+
+                <!-- Bus 24 -->
+                <tr class="bg-rose-50/30 hover:bg-rose-50/60 transition-colors">
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg bg-rose-600 text-white font-bold text-xs flex items-center justify-center shrink-0">#24</span>
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">Valley Shuttle</div>
+                        <span class="text-[10px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.2 rounded">Route 12</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div><span class="font-semibold text-slate-800">M. Harrison</span> <span class="text-slate-400">(Attd: T. Alvarez)</span></div>
+                    <div class="text-[11px] text-rose-600 font-mono">36/45 Students · <span data-live-speed data-base-speed="14">14 km/h</span></div>
+                  </td>
+                  <td class="py-2.5 px-3">
+                    <div class="min-w-[190px]">
+                      <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                        <span class="truncate">Riverbend (07:10)</span>
+                        <span class="font-bold text-rose-600">Stop 3/8 (Delayed)</span>
+                        <span class="text-slate-600">Gate 03</span>
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-rose-500 rounded-full" style="width: 42%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-rose-700">08:24 AM</div>
+                    <div class="text-[10px] text-rose-600 font-semibold">+12m Congestion</div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <span class="text-[11px] font-bold text-rose-700 bg-rose-100 border border-rose-200 px-2 py-0.5 rounded-full">Delayed +12m</span>
+                  </td>
+                  <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                    <a href="tracking.html" class="px-2.5 py-1 bg-white border border-rose-200 rounded-lg text-rose-700 font-semibold hover:bg-rose-50 transition-colors shadow-sm inline-block">Track</a>
+                  </td>
+                </tr>
+
+                <!-- Bus 31 -->
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0">#31</span>
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">North Express</div>
+                        <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.2 rounded">Route 09</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div><span class="font-semibold text-slate-800">R. Ortiz</span> <span class="text-slate-400">(Attd: K. Patel)</span></div>
+                    <div class="text-[11px] text-slate-500 font-mono">31/35 Students · <span data-live-speed data-base-speed="22">22 km/h</span></div>
+                  </td>
+                  <td class="py-2.5 px-3">
+                    <div class="min-w-[190px]">
+                      <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                        <span class="truncate">Pinecrest (07:15)</span>
+                        <span class="font-bold text-emerald-700">Approaching Gate</span>
+                        <span class="text-slate-600">Gate 01</span>
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full" style="width: 95%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">07:58 AM</div>
+                    <div class="text-[10px] text-emerald-600 font-semibold">2 mins away</div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Approaching Gate 1</span>
+                  </td>
+                  <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                    <a href="tracking.html" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 font-semibold hover:text-brand-600 hover:border-brand-200 transition-colors shadow-sm inline-block">Track</a>
+                  </td>
+                </tr>
+
+                <!-- Bus 18 -->
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">#18</span>
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">Metro Transit</div>
+                        <span class="text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 px-1.5 py-0.2 rounded">Route 02</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div><span class="font-semibold text-slate-800">S. Cooper</span> <span class="text-slate-400">(Attd: D. Brooks)</span></div>
+                    <div class="text-[11px] text-slate-500 font-mono">38/40 Students · <span data-live-speed data-base-speed="0">0 km/h</span></div>
+                  </td>
+                  <td class="py-2.5 px-3">
+                    <div class="min-w-[190px]">
+                      <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                        <span class="truncate">Central (07:25)</span>
+                        <span class="font-bold text-indigo-700">Completed (6/6)</span>
+                        <span class="text-slate-600">Gate 01 Bay</span>
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-indigo-600 rounded-full" style="width: 100%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">08:47 AM</div>
+                    <div class="text-[10px] text-indigo-600 font-semibold">On Campus</div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">Completed</span>
+                  </td>
+                  <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                    <a href="attendance.html" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 font-semibold hover:text-brand-600 hover:border-brand-200 transition-colors shadow-sm inline-block">Roster</a>
+                  </td>
+                </tr>
+
+                <!-- Bus 07 -->
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg bg-brand-500 text-white font-bold text-xs flex items-center justify-center shrink-0">#07</span>
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">Westfield Loop</div>
+                        <span class="text-[10px] font-semibold text-brand-700 bg-brand-50 border border-brand-100 px-1.5 py-0.2 rounded">Route 07</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div><span class="font-semibold text-slate-800">T. Chen</span> <span class="text-slate-400">(Attd: G. Hall)</span></div>
+                    <div class="text-[11px] text-slate-500 font-mono">29/36 Students · <span data-live-speed data-base-speed="28">28 km/h</span></div>
+                  </td>
+                  <td class="py-2.5 px-3">
+                    <div class="min-w-[190px]">
+                      <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                        <span class="truncate">Highland (07:35)</span>
+                        <span class="font-bold text-brand-700">Stop 5/8</span>
+                        <span class="text-slate-600">Gate 02</span>
+                      </div>
+                      <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-brand-500 rounded-full" style="width: 62%;"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <div class="font-bold text-slate-900">08:12 AM</div>
+                    <div class="text-[10px] text-emerald-600 font-semibold">14 mins away</div>
+                  </td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">On Time</span>
+                  </td>
+                  <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                    <a href="tracking.html" class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 font-semibold hover:text-brand-600 hover:border-brand-200 transition-colors shadow-sm inline-block">Track</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pt-3 mt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <span class="text-slate-400">Showing 5 active priority routes of 18 total monitored fleet vehicles</span>
+          <a class="font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1" href="tracking.html">
+            <span>Open Comprehensive Fleet Telemetry Grid</span>
+            <span>→</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- 6. MINI MAP & RECENT ACTIVITY FEED (2-column layout) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-7">
+        <!-- Left: Live Bus Tracking Mini-Canvas -->
+        <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="live-bus-tracking-card">
+          <div class="mb-4 pb-3 border-b border-slate-100 flex flex-col gap-3">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[18px]">map</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-slate-900 text-base leading-none">Live Bus Tracking</h3>
+                    <span class="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200/70 px-2 py-0.5 rounded-full">18 Active</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-1">Live GPS tracking &amp; active perimeter</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <a href="tracking.html" class="px-3 py-1.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 font-semibold hover:bg-brand-100 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">open_in_full</span>
+                <span>Open Full Map View</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Mini Map SVG Layout -->
+          <div class="relative h-64 sm:h-72 w-full bg-gradient-to-tr from-slate-100 via-indigo-50/50 to-slate-50 rounded-2xl border border-slate-200/90 overflow-hidden p-3">
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="100%" y1="70" y2="70"></line>
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="100%" y1="140" y2="140"></line>
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="100%" y1="210" y2="210"></line>
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="25%" x2="25%" y1="0" y2="100%"></line>
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="50%" x2="50%" y1="0" y2="100%"></line>
+              <line stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1.5" x1="75%" x2="75%" y1="0" y2="100%"></line>
+              <rect fill="rgba(99, 102, 241, 0.08)" height="40%" rx="16" stroke="#6366f1" stroke-dasharray="5 3" stroke-width="2" width="24%" x="38%" y="30%"></rect>
+              <path d="M 40 220 C 120 180, 180 130, 42% 48%" fill="none" stroke="#712ae2" stroke-linecap="round" stroke-width="2.5"></path>
+              <path d="M 90% 50 C 78% 100, 68% 110, 58% 50%" fill="none" stroke="#3b82f6" stroke-linecap="round" stroke-width="2.5"></path>
+              <path d="M 72% 240 C 66% 190, 62% 150, 55% 65%" fill="none" stroke="#f43f5e" stroke-dasharray="6 3" stroke-linecap="round" stroke-width="2.5"></path>
+              <path d="M 25% 25 C 30% 70, 36% 90, 40% 40%" fill="none" stroke="#10b981" stroke-linecap="round" stroke-width="2.5"></path>
+            </svg>
+
+            <!-- Campus Node -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-xl border-2 border-brand-600 shadow-xl flex items-center gap-1.5 z-10">
+              <div class="w-5 h-5 rounded-md bg-brand-600 text-white flex items-center justify-center font-bold text-[10px]">A</div>
+              <div>
+                <div class="font-extrabold text-slate-900 text-[11px] leading-none">Aegis Campus</div>
+                <div class="text-[9px] text-slate-500 mt-0.5">Gates Open</div>
+              </div>
+            </div>
+
+            <!-- Bus Markers -->
+            <a href="tracking.html" class="absolute left-[8%] top-[34%] bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg rounded-xl p-2 flex items-center gap-2 text-xs hover:scale-105 transition-transform z-10">
+              <div class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm">#12</div>
+              <div>
+                <div class="font-extrabold text-slate-900 text-[11px] flex items-center gap-1">Bus 12<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span></div>
+                <div class="text-[9px] text-slate-500">Moving · ETA: 8m</div>
+              </div>
+            </a>
+
+            <a href="tracking.html" class="absolute right-[4%] top-[10%] bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg rounded-xl p-2 flex items-center gap-2 text-xs hover:scale-105 transition-transform z-10">
+              <div class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm">#18</div>
+              <div>
+                <div class="font-extrabold text-slate-900 text-[11px]">Bus 18</div>
+                <div class="text-[9px] text-emerald-700 font-semibold">ETA: 14 mins</div>
+              </div>
+            </a>
+
+            <a href="tracking.html" class="absolute right-[14%] bottom-[16%] bg-white/95 backdrop-blur-md border border-rose-300 shadow-lg rounded-xl p-2 flex items-center gap-2 text-xs hover:scale-105 transition-transform z-10">
+              <div class="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm">#24</div>
+              <div>
+                <div class="font-extrabold text-rose-700 text-[11px]">Bus 24 · +12m</div>
+                <div class="text-[9px] text-slate-500">Hwy 101 Bridge</div>
+              </div>
+            </a>
+
+            <a href="tracking.html" class="absolute left-[26%] top-[8%] bg-white/95 backdrop-blur-md border border-emerald-300 shadow-lg rounded-xl p-2 flex items-center gap-2 text-xs hover:scale-105 transition-transform z-10">
+              <div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm">#31</div>
+              <div>
+                <div class="font-extrabold text-slate-900 text-[11px]">Bus 31</div>
+                <div class="text-[9px] text-emerald-700 font-semibold">Approaching G1</div>
+              </div>
+            </a>
+
+            <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/80 shadow-sm text-[11px]">
+              <div class="flex items-center gap-3 text-slate-600 font-medium">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Moving (12)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Stopped (4)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Delayed (2)</span>
+              </div>
+              <span class="px-2.5 py-0.5 bg-brand-50 border border-brand-200/70 rounded-lg text-brand-700 font-bold text-[10px] flex items-center gap-1 shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>18 Active Vehicles
+              </span>
+            </div>
+          </div>
+
+          <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-end text-xs">
+            <a class="font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 group" href="tracking.html">
+              <span>Full GPS Telemetry</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Recent Activity Feed -->
+        <div class="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="recent-activity-feed-card">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">history</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">Recent Activity Feed</h3>
+                  <p class="text-xs text-slate-400">Chronological telemetry, scans &amp; incident alerts</p>
+                </div>
+              </div>
+              <button onclick="showToast('Activity log refreshed with live feed', 'info', 'refresh')" class="text-slate-400 hover:text-slate-600" title="Refresh Feed">
+                <span class="material-symbols-outlined text-[20px]">refresh</span>
+              </button>
+            </div>
+
+            <!-- Chronological List -->
+            <div class="space-y-3">
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shrink-0 whitespace-nowrap">09:15 AM</span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 02 Batch:</span>
+                    <span class="text-slate-600 truncate">Grade 6-8, 142 student RFID cards synchronized</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 shrink-0 whitespace-nowrap">Synchronized</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-rose-50/50 border border-rose-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <span class="text-xs font-mono font-bold text-rose-700 bg-white px-2 py-0.5 rounded-lg border border-rose-200 shrink-0 whitespace-nowrap">09:02 AM</span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-rose-900 whitespace-nowrap">Wrong Bus Detected:</span>
+                    <span class="text-rose-800 truncate">Student #8841 boarded route 3 instead of 5 · Parent notified</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">Exception</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shrink-0 whitespace-nowrap">08:53 AM</span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Guardian Portal:</span>
+                    <span class="text-slate-600 truncate">Student marked absent by Guardian · Grade 4B Medical</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100 shrink-0 whitespace-nowrap">Medical</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shrink-0 whitespace-nowrap">08:47 AM</span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Trip Completed:</span>
+                    <span class="text-slate-600 truncate">Bus 18 completed morning route · 38 students on campus</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 shrink-0 whitespace-nowrap">Completed</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shrink-0 whitespace-nowrap">08:42 AM</span>
+                  <div class="flex items-center gap-2 min-w-0 text-xs truncate">
+                    <span class="font-bold text-slate-900 whitespace-nowrap">Gate 01 Arrival:</span>
+                    <span class="text-slate-600 truncate">Bus 12 arrived at school · 42 students de-boarded</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100 shrink-0 whitespace-nowrap">De-boarded</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 mt-3 border-t border-slate-100">
+            <a class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center justify-between group" href="attendance.html">
+              <span>View full activity audit &amp; download telemetry log</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. FOOTER NOTE -->
+      <footer class="pt-2 pb-1 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+        <div>
+          © 2024 Aegis Academy School ERP · GPS Telemetry 99.98% · RFID Gate Sync Live · v4.12.0-prod
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Server Node 04 Online</span>
+          <span>·</span>
+          <a class="hover:text-slate-600 underline" href="https://github.com" target="_blank">System Documentation</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
