@@ -1,13 +1,43 @@
-/* Aegis ERP - Shared Design System & Utility Styles */
+/* Big Yellow Bus - Shared Design System & Theme Engine */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 :root {
-  --primary: #3525cd;
-  --primary-container: #4f46e5;
-  --accent: #712ae2;
+  /* Default Primary Brand Color: Midnight Navy (#06033A) */
+  --primary: #06033A;
+  --primary-container: #0f124d;
+  --accent: #1b3b87;
   --surface: #f8fafc;
   --surface-card: #ffffff;
+
+  /* Theme Engine CSS Variables (Midnight Navy #06033A default) */
+  --brand-primary: #06033A;
+  --brand-primary-rgb: 6 3 58;
+  --brand-accent: #1b3b87;
+  --brand-accent-rgb: 27 59 135;
+
+  --brand-50: #eef1f8;
+  --brand-50-rgb: 238 241 248;
+  --brand-100: #dce3f2;
+  --brand-100-rgb: 220 227 242;
+  --brand-200: #bdcbe7;
+  --brand-200-rgb: 189 203 231;
+  --brand-300: #94aad8;
+  --brand-300-rgb: 148 170 216;
+  --brand-400: #6484c4;
+  --brand-400-rgb: 100 132 196;
+  --brand-500: #304e9c;
+  --brand-500-rgb: 48 78 156;
+  --brand-600: #06033A;
+  --brand-600-rgb: 6 3 58;
+  --brand-700: #0f124d;
+  --brand-700-rgb: 15 18 77;
+  --brand-800: #0a0c3a;
+  --brand-800-rgb: 10 12 58;
+  --brand-900: #06033A;
+  --brand-900-rgb: 6 3 58;
+  --brand-950: #030122;
+  --brand-950-rgb: 3 1 34;
 }
 
 body {
@@ -15,6 +45,60 @@ body {
   background-color: #f8fafc;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Dark Mode Overrides (Deep Midnight Dark) */
+html.dark body {
+  background-color: #040221 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark div.bg-\[\#f8fafc\] {
+  background-color: #040221 !important;
+}
+
+html.dark aside[data-purpose="sidebar-dock"],
+html.dark .bg-white\/90,
+html.dark .bg-white\/95 {
+  background-color: rgba(9, 6, 51, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .bg-white {
+  background-color: #090633 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9;
+}
+
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/90 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark input,
+html.dark select {
+  background-color: #0f0b4a !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
 }
 
 .material-symbols-outlined {
@@ -41,15 +125,15 @@ body {
   height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--brand-300, #bdcbe7);
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--brand-500, #6484c4);
 }
 
 /* Animated Pulse Effects */
@@ -73,24 +157,24 @@ body {
   transform-origin: center center;
 }
 
-/* Glassmorphism & Striped Accents */
+/* Glassmorphism & Dynamic Theme Striped Accents */
 .bg-striped-purple {
   background: repeating-linear-gradient(
     -45deg,
-    #712ae2,
-    #712ae2 6px,
-    #5b21b6 6px,
-    #5b21b6 12px
+    var(--brand-primary, #06033A),
+    var(--brand-primary, #06033A) 6px,
+    var(--brand-accent, #1b3b87) 6px,
+    var(--brand-accent, #1b3b87) 12px
   );
 }
 
 .bg-striped-purple-light {
   background: repeating-linear-gradient(
     -45deg,
-    #ede9fe,
-    #ede9fe 6px,
-    #c4b5fd 6px,
-    #c4b5fd 12px
+    var(--brand-100, #dce3f2),
+    var(--brand-100, #dce3f2) 6px,
+    var(--brand-200, #bdcbe7) 6px,
+    var(--brand-200, #bdcbe7) 12px
   );
 }
 
@@ -126,7 +210,7 @@ body {
 
 .map-marker.active {
   transform: scale(1.2) translateY(-6px);
-  filter: drop-shadow(0 10px 15px rgba(79, 70, 229, 0.4));
+  filter: drop-shadow(0 10px 15px rgba(var(--brand-600-rgb, 6 3 58) / 0.4));
 }
 
 /* Toast Notifications */
@@ -146,10 +230,11 @@ body {
   min-width: 280px;
   max-width: 420px;
   padding: 14px 18px;
-  background: #0f172a;
+  background: #06033A;
   color: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   gap: 12px;

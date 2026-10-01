@@ -21,19 +21,26 @@
         extend: {
           colors: {
             brand: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              200: '#ddd6fe',
-              300: '#c4b5fd',
-              400: '#a78bfa',
-              500: '#8b5cf6',
-              600: '#712ae2',
-              700: '#5b21b6',
-              800: '#4c1d95',
-              900: '#3525cd',
+              50: 'rgb(var(--brand-50-rgb, 238 241 248) / <alpha-value>)',
+              100: 'rgb(var(--brand-100-rgb, 220 227 242) / <alpha-value>)',
+              200: 'rgb(var(--brand-200-rgb, 189 203 231) / <alpha-value>)',
+              300: 'rgb(var(--brand-300-rgb, 148 170 216) / <alpha-value>)',
+              400: 'rgb(var(--brand-400-rgb, 100 132 196) / <alpha-value>)',
+              500: 'rgb(var(--brand-500-rgb, 48 78 156) / <alpha-value>)',
+              600: 'rgb(var(--brand-600-rgb, 6 3 58) / <alpha-value>)',
+              700: 'rgb(var(--brand-700-rgb, 15 18 77) / <alpha-value>)',
+              800: 'rgb(var(--brand-800-rgb, 10 12 58) / <alpha-value>)',
+              900: 'rgb(var(--brand-900-rgb, 6 3 58) / <alpha-value>)',
+              950: 'rgb(var(--brand-950-rgb, 3 1 34) / <alpha-value>)',
             },
-            primary: '#3525cd',
-            accent: '#712ae2'
+            primary: {
+              DEFAULT: 'rgb(var(--brand-primary-rgb, 6 3 58) / <alpha-value>)',
+              50: 'rgb(var(--brand-50-rgb, 238 241 248) / <alpha-value>)',
+              100: 'rgb(var(--brand-100-rgb, 220 227 242) / <alpha-value>)',
+              600: 'rgb(var(--brand-600-rgb, 6 3 58) / <alpha-value>)',
+              700: 'rgb(var(--brand-700-rgb, 15 18 77) / <alpha-value>)',
+            },
+            accent: 'rgb(var(--brand-accent-rgb, 27 59 135) / <alpha-value>)'
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
@@ -49,6 +56,7 @@
     }
   </script>
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme.js"></script>
 </head>
 <body class="font-sans antialiased text-slate-800 min-h-screen bg-[#f8fafc]">
   <!-- Outer Floating App Shell -->
@@ -93,7 +101,12 @@
 
       <!-- Bottom Controls & MC Profile Badge -->
       <div class="flex flex-col items-center gap-4">
-        <button onclick="showToast('Fleet settings: GPS sampling rate 2.0s', 'info', 'settings')" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Settings">
+        <!-- Theme Switcher Button -->
+        <button onclick="window.BYBTheme.toggleModal()" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors relative group" title="Theme Settings (Default: Midnight #06033A)">
+          <span class="material-symbols-outlined text-[24px]">palette</span>
+          <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm" style="background-color: var(--brand-primary, #06033A);" data-theme-indicator-dot></span>
+        </button>
+        <button onclick="window.BYBTheme.toggleModal()" class="w-12 h-12 rounded-2xl text-slate-400 hover:text-brand-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Settings &amp; Theme">
           <span class="material-symbols-outlined text-[24px]">settings</span>
         </button>
         <div class="relative cursor-pointer group" title="Marcus Chen · Transport Operations Director">
@@ -127,13 +140,6 @@
 
         <!-- Standard Right Header Action Cluster -->
         <div class="flex items-center gap-3 shrink-0">
-          <!-- Live Time Pill -->
-          <div class="hidden sm:flex items-center gap-2 px-3.5 h-10 bg-white border border-slate-200/80 rounded-2xl shadow-sm text-xs font-semibold text-slate-600 shrink-0">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-mono" data-live-clock>08:42:15 AM</span>
-            <span class="text-slate-300">|</span>
-            <span class="text-emerald-600 font-bold">18/24 Buses Live</span>
-          </div>
 
           <!-- Search Bar -->
           <div class="relative w-64 md:w-72 h-10 shrink-0">
@@ -143,8 +149,14 @@
             <input class="w-full h-10 pl-10 pr-4 bg-white border border-slate-200/80 rounded-2xl text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition-all shadow-sm" placeholder="Search student, bus, route..." type="text">
           </div>
 
+          <!-- Theme Change Icon Button (Next to Notification Icon) -->
+          <button onclick="window.BYBTheme.toggleModal()" class="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-brand-600 hover:bg-slate-50 shadow-sm relative transition-all shrink-0 cursor-pointer group" title="Theme &amp; Appearance (Default: #06033A)">
+            <span class="material-symbols-outlined text-[20px] group-hover:rotate-45 transition-transform">palette</span>
+            <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white shadow-sm" style="background-color: var(--brand-primary, #06033A);" data-theme-indicator-dot></span>
+          </button>
+
           <!-- Notification Bell with Counter -->
-          <button onclick="showToast('4 alerts: #24 Valley Shuttle +12m delay', 'warning', 'notifications')" class="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:bg-slate-50 shadow-sm relative transition-all shrink-0" title="Notifications (4 pending)">
+          <button onclick="showToast('4 alerts: #24 Valley Shuttle +12m delay', 'warning', 'notifications')" class="w-10 h-10 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:bg-slate-50 shadow-sm relative transition-all shrink-0 cursor-pointer" title="Notifications (4 pending)">
             <span class="material-symbols-outlined text-[20px]">notifications</span>
             <span class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow-sm">4</span>
           </button>
@@ -173,12 +185,12 @@
                 <stop offset="100%" stop-color="#059669"></stop>
               </linearGradient>
               <linearGradient id="routeIndigo" x1="0%" x2="100%" y1="0%" y2="100%">
-                <stop offset="0%" stop-color="#3525cd"></stop>
-                <stop offset="100%" stop-color="#712ae2"></stop>
+                <stop offset="0%" stop-color="var(--brand-primary, #06033A)"></stop>
+                <stop offset="100%" stop-color="var(--brand-accent, #1b3b87)"></stop>
               </linearGradient>
               <linearGradient id="routeViolet" x1="0%" x2="100%" y1="0%" y2="100%">
-                <stop offset="0%" stop-color="#8b5cf6"></stop>
-                <stop offset="100%" stop-color="#712ae2"></stop>
+                <stop offset="0%" stop-color="var(--brand-400, #6484c4)"></stop>
+                <stop offset="100%" stop-color="var(--brand-primary, #06033A)"></stop>
               </linearGradient>
               <filter height="140%" id="busShadow" width="140%" x="-20%" y="-20%">
                 <feDropShadow dx="0" dy="4" flood-color="#0f172a" flood-opacity="0.18" stdDeviation="4"></feDropShadow>
@@ -229,17 +241,17 @@
             <!-- Campus Geofence Perimeter -->
             <g id="geofence-campus">
               <polygon fill="#4f46e5" fill-opacity="0.06" points="760,260 1060,270 1080,470 780,460" stroke="#6366f1" stroke-dasharray="6 4" stroke-width="2"></polygon>
-              <circle cx="760" cy="260" fill="#3525cd" r="4"></circle>
-              <circle cx="1060" cy="270" fill="#3525cd" r="4"></circle>
-              <circle cx="1080" cy="470" fill="#3525cd" r="4"></circle>
-              <circle cx="780" cy="460" fill="#3525cd" r="4"></circle>
+              <circle cx="760" cy="260" fill="var(--brand-primary, #06033A)" r="4"></circle>
+              <circle cx="1060" cy="270" fill="var(--brand-primary, #06033A)" r="4"></circle>
+              <circle cx="1080" cy="470" fill="var(--brand-primary, #06033A)" r="4"></circle>
+              <circle cx="780" cy="460" fill="var(--brand-primary, #06033A)" r="4"></circle>
               
               <rect fill="#ffffff" height="46" rx="6" stroke="#cbd5e1" stroke-width="1.2" width="85" x="825" y="305"></rect>
               <text fill="#475569" font-family="Plus Jakarta Sans" font-size="9" font-weight="700" x="842" y="332">NORTH HALL</text>
               <rect fill="#ffffff" height="54" rx="6" stroke="#cbd5e1" stroke-width="1.2" width="100" x="940" y="305"></rect>
               <text fill="#475569" font-family="Plus Jakarta Sans" font-size="9" font-weight="700" x="955" y="336">STEM PAVILION</text>
-              <rect fill="#ede9fe" fill-opacity="0.7" height="50" rx="8" stroke="#712ae2" stroke-width="1.5" width="160" x="840" y="380"></rect>
-              <text fill="#3525cd" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" letter-spacing="0.03em" x="862" y="410">AEGIS ACADEMY (MAIN)</text>
+              <rect fill="var(--brand-50, #eef1f8)" fill-opacity="0.8" height="50" rx="8" stroke="var(--brand-primary, #06033A)" stroke-width="1.5" width="160" x="840" y="380"></rect>
+              <text fill="var(--brand-primary, #06033A)" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" letter-spacing="0.03em" x="862" y="410">AEGIS ACADEMY (MAIN)</text>
               
               <!-- Gate 01 -->
               <g transform="translate(760, 360)">
