@@ -232,3 +232,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// Bus Gate Passage Verification Handler
+window.verifyBusGatePassage = function(busId, routeName, gateName) {
+  const statusEl = document.getElementById(`gate-status-bus-${busId}`);
+  const btnEl = document.getElementById(`gate-btn-bus-${busId}`);
+  const rowEl = document.getElementById(`gate-row-bus-${busId}`);
+  if (statusEl && btnEl) {
+    statusEl.className = 'inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full';
+    statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Gate In Verified';
+    btnEl.parentElement.innerHTML = '<span class="text-xs font-bold text-emerald-600 flex items-center justify-end gap-1"><span class="material-symbols-outlined text-[16px]">verified</span>Verified</span>';
+    if (rowEl) rowEl.classList.remove('bg-amber-50/20');
+    showToast(`Bus #${busId} (${routeName}) verified through ${gateName}`, 'success', 'verified');
+  }
+};
+
