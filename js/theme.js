@@ -766,8 +766,7 @@
   // Immediate execution to prevent flash of wrong colors
   window.BYBTheme.init();
 
-  // DOM ready hook to attach trigger handlers
-  document.addEventListener('DOMContentLoaded', () => {
+  function setupThemeListeners() {
     window.BYBTheme.init();
 
     // Hook any button with data-action="theme-toggle"
@@ -784,6 +783,11 @@
         window.BYBTheme.closeModal();
       }
     });
-  });
+  }
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupThemeListeners);
+  } else {
+    setupThemeListeners();
+  }
 })();

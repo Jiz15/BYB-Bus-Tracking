@@ -56,7 +56,7 @@
     }
   </script>
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/theme.js"></script>
+  <script src="/js/theme.js"></script>
 </head>
 <body class="font-sans antialiased text-slate-800 min-h-screen bg-[#f8fafc]">
   <!-- Outer Floating App Shell -->
@@ -633,58 +633,6 @@
           </div>
         </aside>
 
-        <!-- SELECTED BUS QUICK INSPECTOR (BOTTOM RIGHT) -->
-        <div class="absolute bottom-4 right-4 z-20 w-80 bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden p-4 space-y-3">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Selected Telemetry</span>
-              <h4 class="text-sm font-bold text-slate-900" data-active-route-name>Valley Shuttle · Route 12</h4>
-            </div>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">Bus #24</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-              <span class="text-[10px] text-slate-400 block font-medium">Current Speed</span>
-              <span class="font-extrabold text-slate-900 text-sm font-mono" data-live-speed data-base-speed="14">14 km/h</span>
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-              <span class="text-[10px] text-slate-400 block font-medium">Estimated Arrival</span>
-              <span class="font-extrabold text-rose-600 text-sm font-mono">08:24 AM (+12m)</span>
-            </div>
-          </div>
-
-          <!-- Stop Timeline -->
-          <div class="space-y-1.5 text-[11px]">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Stop Milestones</span>
-            <div class="flex items-center gap-2 text-emerald-700 font-semibold">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span>1. Pine Ridge Depot (07:05) - Done</span>
-            </div>
-            <div class="flex items-center gap-2 text-emerald-700 font-semibold">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span>2. Riverbend Commons (07:18) - Done</span>
-            </div>
-            <div class="flex items-center gap-2 text-rose-600 font-bold">
-              <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-              <span>3. Hwy 101 Overpass (Current Congestion)</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-400">
-              <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-              <span>4. Campus Gate 03 (Drop-off Bay)</span>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
-            <a href="attendance.html" class="flex-1 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs text-center shadow-sm hover:bg-brand-700 transition">
-              Open Roster
-            </a>
-            <button onclick="showToast('Contacting Driver M. Harrison via VOIP Radio...', 'info', 'radio')" class="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition" title="Radio Driver">
-              <span class="material-symbols-outlined text-[18px]">phone_in_talk</span>
-            </button>
-          </div>
-        </div>
 
       </div>
 

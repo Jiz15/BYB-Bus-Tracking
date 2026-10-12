@@ -44,6 +44,7 @@ function showToast(message, type = 'info', icon = 'info') {
     setTimeout(() => toast.remove(), 300);
   }, 3500);
 }
+window.showToast = showToast;
 
 // Live Clock Initializer
 function initLiveClock() {
